@@ -6,18 +6,19 @@
     <script type="text/javascript" src="fonctions.js"></script>
 </head>
 <script>
+    tokenStorage = sessionStorage;
+        getToken(function (token) {
+            tokenStorage.setItem("active_token",token["access_token"]);
+        });
 
-    getToken(function (token) {
 
-        document.getElementById("h").value=token["access_token"];
-    });
-    setTimeout(function(){console.log(document.getElementById("h").value)},3000);
+
 
 </script>
 <body>
 
 <p id="NameArtist" name="cboNameArtist"></p>
-<input type="hidden" id="h" value="value">
+
 
 
 </body>
