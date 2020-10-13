@@ -1,4 +1,4 @@
-function getParameters()
+function getParameters(param)
 {
     var urlParams,
         match,
@@ -9,14 +9,14 @@ function getParameters()
     urlParams = {};
     while (match = search.exec(query))
         urlParams[decode(match[1])] = decode(match[2]);
-    return urlParams['code'];
+    return urlParams[param];
 }
 
 function getAutorisationCode(){
     window.location = 'https://accounts.spotify.com/authorize?response_type=code&client_id=7a6c1cdb23c8425ba198f86ca77ce41c&redirect_uri=http%3A%2F%2Flocalhost/musicwebsite/page.html';
 }
  function getToken(callback){
-     const data = "grant_type=authorization_code&code="+getParameters()+"&redirect_uri=http%3A%2F%2Flocalhost/musicwebsite/page.html&client_id=7a6c1cdb23c8425ba198f86ca77ce41c&client_secret=3ba8ea388bd74637a308f893bd21cfbd";
+     const data = "grant_type=authorization_code&code="+getParameters('code')+"&redirect_uri=http%3A%2F%2Flocalhost/musicwebsite/page.html&client_id=7a6c1cdb23c8425ba198f86ca77ce41c&client_secret=3ba8ea388bd74637a308f893bd21cfbd";
 
      const xhr = new XMLHttpRequest();
      xhr.withCredentials = true;

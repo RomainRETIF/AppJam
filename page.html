@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Music WebSite</title>
     <script type="text/javascript" src="fonctions.js"></script>
+    <link href="style.css" rel="stylesheet">
 </head>
 <script>
     if(!sessionStorage.getItem('active_token')) {
@@ -23,11 +24,31 @@
             if (this.readyState === this.DONE) {
                 var artists = JSON.parse(this.responseText);
                 artists["artists"]["items"].forEach(item => {
+                    var monTitre = document.createElement('span');
+                    monTitre.innerHTML = item["name"];
                     var monImage = document.createElement('img');
                     monImage.src = item["images"][1]["url"];
+
+                    const lienimage2 = document.createElement('a');
+                    lienimage2.href = item["external_urls"]["spotify"];
+                    var monImage2 = document.createElement('img');
+                    monImage2.src ="images/spotify.png";
+                    monImage2.className="imgspotify"
+
+                    lienimage2.append(monImage2); // <a href=""><img></a>
+
+
+                    var monEspace = document.createElement('br');
+                    var monEspace2 = document.createElement('br');
+                    var monEspace3 = document.createElement('br');
                     //monImage.style.size = item["images"][0]["url"];
+                    document.getElementById("Artist").appendChild(monTitre);
+                    document.getElementById("Artist").appendChild(monEspace);
                     document.getElementById("Artist").appendChild(monImage);
-                    console.log(item["images"][0]["url"]);
+                    document.getElementById("Artist").appendChild(monEspace2);
+                    document.getElementById("Artist").appendChild(lienimage2);
+                    document.getElementById("Artist").appendChild(monEspace3);
+                    console.log(item);
                 })
             }
         });
