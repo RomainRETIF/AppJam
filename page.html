@@ -7,15 +7,41 @@
 </head>
 <script>
     tokenStorage = sessionStorage;
-        getToken(function (token) {
-            tokenStorage.setItem("active_token",token["access_token"]);
-        });
+        if(tokenStorage.getItem("active_token")==null)
+        {
+            getToken(function (token) {
+                tokenStorage.setItem("active_token",token["access_token"]);
+            });
+            console.log(tokenStorage.getItem("active_token"));
+        }
 
 
+    const data = null;
 
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === this.DONE) {
+            var artists = JSON.parse(this.responseText);
+            artists["artists"]["items"].forEach(item => {
+                var monImage = document.createElement('img');
+                monImage.src = item["images"][1]["url"];
+                //monImage.style.size = item["images"][0]["url"];
+                document.getElementById("Artist").appendChild(monImage);
+                console.log(item["images"][0]["url"]);
+            })
+        }
+    });
+
+    xhr.open("GET", "https://api.spotify.com/v1/search?q=Ambiance&type=artist&market=FR&limit=10&offset=0");
+    xhr.setRequestHeader("authorization", "Bearer " + tokenStorage.getItem("active_token"));
+
+    xhr.send(data);
 
 </script>
 <body>
+<div id="Artist"></div>
 
 <p id="NameArtist" name="cboNameArtist"></p>
 
