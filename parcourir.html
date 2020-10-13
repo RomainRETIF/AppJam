@@ -7,10 +7,6 @@
 </head>
 <script>
     tokenStorage = sessionStorage;
-    getToken(function (token) {
-        tokenStorage.setItem("active_token",token["access_token"]);
-    });
-
     const data = null;
 
     const xhr = new XMLHttpRequest();
@@ -18,7 +14,11 @@
 
     xhr.addEventListener("readystatechange", function () {
         if (this.readyState === this.DONE) {
-                console.log();
+            var releases = JSON.parse(this.responseText);
+            //console.log(releases["albums"]["items"][0]["artists"][0]["name"]);
+            releases["albums"]["items"].forEach(item =>
+            document.getElementById("p").innerHTML += item["artists"][0]["name"] + "<br>"
+            );
         }
     });
 
@@ -26,12 +26,13 @@
     xhr.setRequestHeader("authorization", "Bearer " + tokenStorage.getItem("active_token"));
 
     xhr.send(data);
-
-
+    
 </script>
 <body>
 
-<p id="NameArtist" name="cboNameArtist"></p>
+Artistes qui viennent de sortir une musique :
+<br>
+<p id="p"></p>
 
 
 
