@@ -6,17 +6,18 @@
     <script type="text/javascript" src="fonctions.js"></script>
 </head>
 <script>
-    var token;
+
     getToken(function (token) {
 
-        console.log(token["access_token"]);
+        document.getElementById("h").value=token["access_token"];
     });
+    setTimeout(function(){console.log(document.getElementById("h").value)},3000);
 
 </script>
 <body>
 
 <p id="NameArtist" name="cboNameArtist"></p>
-
+<input type="hidden" id="h" value="value">
 
 
 </body>
