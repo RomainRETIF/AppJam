@@ -6,7 +6,7 @@
     <script type="text/javascript" src="fonctions.js"></script>
 </head>
 <script>
-    tokenStorage = sessionStorage;
+    sessionStorage;
     const data = null;
 
     const xhr = new XMLHttpRequest();
@@ -23,7 +23,7 @@
     });
 
     xhr.open("GET", "https://api.spotify.com/v1/browse/new-releases");
-    xhr.setRequestHeader("authorization", "Bearer " + tokenStorage.getItem("active_token"));
+    xhr.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
 
     xhr.send(data);
     
