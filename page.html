@@ -6,7 +6,12 @@
     <script type="text/javascript" src="fonctions.js"></script>
 </head>
 <script>
-    getToken();
+    var token;
+    getToken(function (text) {
+
+        console.log(text);
+    });
+
 </script>
 <body>
 

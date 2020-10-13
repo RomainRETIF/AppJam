@@ -15,7 +15,7 @@ function getParameters()
 function getAutorisationCode(){
     window.location = 'https://accounts.spotify.com/authorize?response_type=code&client_id=7a6c1cdb23c8425ba198f86ca77ce41c&redirect_uri=http%3A%2F%2Flocalhost/musicwebsite/page.html';
 }
- function getToken(){
+ function getToken(callback){
      const data = "grant_type=authorization_code&code="+getParameters()+"&redirect_uri=http%3A%2F%2Flocalhost/musicwebsite/page.html&client_id=7a6c1cdb23c8425ba198f86ca77ce41c&client_secret=3ba8ea388bd74637a308f893bd21cfbd";
 
      const xhr = new XMLHttpRequest();
@@ -23,7 +23,8 @@ function getAutorisationCode(){
 
      xhr.addEventListener("readystatechange", function () {
          if (this.readyState === this.DONE) {
-             console.log(this.responseText);
+             callback(this.responseText);
+             return (this.responseText);
          }
      });
 
