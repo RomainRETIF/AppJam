@@ -171,9 +171,6 @@ function recherche(){
     }
 }
 
-</script>
-
-<script>
 var lstartist= [];
 const xhr3 = new XMLHttpRequest();
       xhr3.withCredentials = true;
@@ -185,7 +182,7 @@ const xhr3 = new XMLHttpRequest();
                 artist["artists"]["items"].forEach(item =>{
                 //console.log( artist["artists"]["items"]);
                 if(item["images"][2] !== undefined){
-                    document.getElementById("rechercheartist").innerHTML += item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' id='"+item['id']+"' value='+' style='margin: 10%;' name='btnaddartist' onclick='"+ajoutartist(item["id"])+"'>"+ "<br><br>";
+                    document.getElementById("rechercheartist").innerHTML += item["name"] +" "+"<input type='button' value='aaa' onclick=ajoutartist('" + item["id"] + "')>";
                     console.log(item["name"]);
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
@@ -219,9 +216,8 @@ function rechercheartist(){
     }
 }
 
-function ajoutartist(idartist){
-    lstartist.push(idartist);
-    console.log("ici");
+function ajoutartist(){
+    alert();
 }
 
 </script>
