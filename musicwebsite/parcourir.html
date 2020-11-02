@@ -31,6 +31,8 @@
 
         @media screen and (max-width: 600px){
             #recherche{
+                position: fixed;
+                top:341px;
                 width: 100%;
                 margin-right: 0%;
             }
@@ -40,15 +42,16 @@
             #recherche{
                 width: 16%;
                 margin-right: 5%;
+                top: 55px;
             }
         }
         
         #recherche{
-            position: absolute;
+            position: fixed;
             right: 0px;
             
             background-color: rgb(20,20,20);
-            z-index: 1;
+            z-index: 2;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             padding-left: 10px;
@@ -64,7 +67,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="position: fixed;width:100%;top:0px;z-index:1">
         <a class="navbar-brand" href="accueil.html">Spotijam</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon" id="btnmenu"></span>
@@ -95,7 +98,7 @@
         </div>
       </nav>
 
-      <div id="recherche"></div>
+      <div id="recherche" style="display: none;"></div>
 
 <br>
 
@@ -116,6 +119,7 @@
     var row;
     var cell;
     var i = 0;
+    
 
     xhr.addEventListener("readystatechange", function () {
         if (this.readyState === this.DONE) {
@@ -129,7 +133,7 @@
                     if(releases["albums"]["items"][k]["album_type"] === "album"){
                         row = tableau.insertRow(i);
                         cell = row.insertCell(i);
-                        cell.innerHTML = "<span style='font-size:20px'>&nbsp; Artiste : " + releases["albums"]["items"][k]["artists"][0]["name"] + "<br>";
+                        cell.innerHTML = "<a href='artiste.html?id=" + releases["albums"]["items"][k]["artists"][0]["id"] + "'><span style='font-size:20px'>&nbsp; Artiste : " + releases["albums"]["items"][k]["artists"][0]["name"] + "</a><br>";
                         cell.innerHTML += "&nbsp;&nbsp; Date de sortie : " + releases["albums"]["items"][k]["release_date"];
                         cell.innerHTML += "<br>&nbsp;&nbsp; Nombre de musiques : " + releases["albums"]["items"][k]["total_tracks"];
                         cell.innerHTML += "<br>&nbsp;&nbsp;<a style='color:rgb(130,130,130)' href='" + releases["albums"]["items"][k]["external_urls"]["spotify"] + "' target='_blank'> Ecouter sur Spotify <img src='https://i.pinimg.com/originals/2b/d4/2e/2bd42ea12995732246a3b9acdbb0f880.png' style='max-width:20px'></a>" ;
@@ -144,7 +148,8 @@
                         }
                         cell.innerHTML = "<br><h5>" + releases["albums"]["items"][k]["name"] + "</h5>";
                         if(releases["albums"]["items"][k]["images"].length > 0)
-                            cell.innerHTML += "<img style='max-width:250px' src='" + releases["albums"]["items"][k]["images"][1]["url"] + "'>";
+                        console.log(releases)
+                            cell.innerHTML += "<a href='artiste.html?id=" + releases["albums"]["items"][k]["artists"][0]["id"] + "'><img style='max-width:250px' src='" + releases["albums"]["items"][k]["images"][1]["url"] + "'></a>";
                     }
                 }
             }
@@ -169,7 +174,7 @@
                             });
                         }
 
-                    cell.innerHTML = "<span style='font-size:20px'>&nbsp;" + releases["artists"]["items"][j]["name"] + "</span><br>";
+                    cell.innerHTML = "<a href='artiste.html?id=" + releases["artists"]["items"][j]["id"] + "'><span style='font-size:20px'>&nbsp;" + releases["artists"]["items"][j]["name"] + "</span></a><br>";
                     cell.innerHTML += "<span style='color:rgb(130,130,130)'>&nbsp; Styles :" + genres + "<br>";
                     cell.innerHTML += "<span style='color:rgb(130,130,130)'>&nbsp; Popularité : " + releases["artists"]["items"][j]["popularity"] + "<br></span>";
                     cell.innerHTML += "<span style='color:rgb(130,130,130)'>&nbsp; Followers : " + releases["artists"]["items"][j]["followers"]["total"] + "<br></span>";
@@ -182,7 +187,7 @@
 
                     cell.innerHTML = "<br>";
                     if(releases["artists"]["items"][j]["images"].length > 0)
-                        cell.innerHTML += "<img style='max-width:250px' src='" + releases["artists"]["items"][j]["images"][1]["url"] + "'><br><br>";
+                        cell.innerHTML += "<a href='artiste.html?id=" + releases["artists"]["items"][j]["id"] + "'><img style='max-width:250px' src='" + releases["artists"]["items"][j]["images"][1]["url"] + "'></a><br><br>";
                 }
             }
         }
@@ -224,8 +229,10 @@
     
     var compteur = 0;
     function affichermenu(){
-        if(compteur % 2 != 0)
+        if(compteur % 2 != 0){
+            document.getElementById("recherche").style.display = "none";
             document.getElementById("navbarColor02").style.display = "none";
+        }
         else
         document.getElementById("navbarColor02").style.display = "block";
         compteur ++;
@@ -243,7 +250,7 @@
             releases["artists"]["items"].forEach(item =>{
                 
                 if(item["images"][2] !== undefined){
-                    document.getElementById("recherche").innerHTML += item["name"] + "<br>";
+                    document.getElementById("recherche").innerHTML += "<a href='artiste?id=" + item["id"] + "'>" + item["name"] + "</a><br>";
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
             });

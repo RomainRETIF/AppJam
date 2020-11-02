@@ -33,24 +33,39 @@
 
         @media screen and (max-width: 600px){
             #recherche{
+                position: fixed;
+                top:341px;
                 width: 100%;
                 margin-right: 0%;
             }
+
+            #albums{
+                color: white; font-size: 38px;
+            }
+
         }
 
         @media screen and (min-width: 601px){
             #recherche{
                 width: 16%;
                 margin-right: 5%;
+                top: 55px;
+            }
+
+            #albums{
+                color: white; font-size: 38px;margin-left: 75%;
+            }
+            #tableau2{
+                position:absolute; top:88%;font-size: 32px;color:white
             }
         }
         
         #recherche{
-            position: absolute;
+            position: fixed;
             right: 0px;
             
             background-color: rgb(20,20,20);
-            z-index: 1;
+            z-index: 2;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             padding-left: 10px;
@@ -66,7 +81,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="position: fixed;width:100%;top:0px;z-index:1">
         <a class="navbar-brand" href="accueil.html">Spotijam</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon" id="btnmenu"></span>
@@ -97,17 +112,17 @@
         </div>
       </nav>
 
-      <div id="recherche"></div>
+      <div id="recherche" style="display: none;"></div>
 
 
 <div style="margin-left:10%;margin-right:10%" id="container">
-<br>
+<br><br><br>
           <div id="div1" style="float:left"></div>
-          <div style="float:right;margin-top:7.5%;margin-right: 5%;"><span style="color: white; font-size: 38px;margin-left: 75%;">Albums</span><table id="tableau"></table></div>
+          <div style="float:right;margin-top:7.5%;margin-right: 5%;"><span id="albums">Albums</span><table id="tableau"></table></div>
           
 </div>
 
-<div id="tableau2" style="position:absolute; top:88%;font-size: 32px;color:white">&nbsp;Artistes similaires<br></div>
+<div id="tableau2"><br></div>
 </body>
 <script>
     sessionStorage;
@@ -117,6 +132,7 @@
     const xhr3 = new XMLHttpRequest();
     const xhr4 = new XMLHttpRequest();
     xhr.withCredentials = true;
+    
 
     xhr.addEventListener("readystatechange", function () {
         if (this.readyState === this.DONE) {
@@ -163,7 +179,8 @@
                         if(elem["name"].length > 17){
                             elem["name"] = elem["name"].substring(0,17) + "...";
                         }
-                        cell.innerHTML = "<a style='font-size:14px' href='#'><img style='max-width:150px' src='" + elem["images"][1]["url"] + "' style=''><br>" + elem["name"] + "<br><br></a>";
+                        
+                        cell.innerHTML = "<a style='font-size:14px' target='_blank' href='" + elem["external_urls"]["spotify"] + "'><img style='max-width:150px' src='" + elem["images"][1]["url"] + "' style=''><br>" + elem["name"] + "<br><br></a>";
                         i++;
                         elemAncien = elem["name"];
                     
@@ -177,19 +194,22 @@
         if (this.readyState === this.DONE) {
 
             var releases = JSON.parse(this.responseText);
-            console.log(releases);
+
             
             var tableau2 = document.getElementById("tableau2");
-            //var row2 = tableau2.insertRow(0);
             
-            //var cell2;
-            
-            releases["artists"].splice(releases["artists"].length-10,releases["artists"].length);
+
+            if (window.matchMedia("(min-width: 600px)").matches)
+                    {tableau2.innerHTML = "&nbsp;Artistes similaires<br>";
+                        releases["artists"].splice(releases["artists"].length-10,releases["artists"].length);
             releases["artists"].forEach(elem =>
                 {
-                    //cell2 = row2.insertCell(0);
-                    tableau2.innerHTML += "<img src='" + elem["images"][1]["url"] + "' style='width:10%;height:160px'>";
+                    console.log(elem);
+                    tableau2.innerHTML += "<a href='artiste.html?id=" + elem["id"] + "'><img src='" + elem["images"][1]["url"] + "' style='width:10%;height:160px'></a>";
                 });
+                    }
+            
+            
         }
     });
 
@@ -205,11 +225,17 @@
 
 
     document.getElementById("btnmenu").addEventListener("click", affichermenu);
+    document.getElementById("div1").addEventListener("click", function(){
+            document.getElementById("recherche").style.display = "none";
+        });
     
     var compteur = 0;
     function affichermenu(){
         if(compteur % 2 != 0)
+        {
+            document.getElementById("recherche").style.display = "none";
             document.getElementById("navbarColor02").style.display = "none";
+        }
         else
         document.getElementById("navbarColor02").style.display = "block";
         compteur ++;
@@ -227,7 +253,7 @@
             releases["artists"]["items"].forEach(item =>{
                 
                 if(item["images"][2] !== undefined){
-                    document.getElementById("recherche").innerHTML += item["name"] + "<br>";
+                    document.getElementById("recherche").innerHTML += "<a href='artiste?id=" + item["id"] + "'>" + item["name"] + "</a><br>";
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
             });

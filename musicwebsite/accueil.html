@@ -31,6 +31,8 @@
 
         @media screen and (max-width: 600px){
             #recherche{
+                position: fixed;
+                top:341px;
                 width: 100%;
                 margin-right: 0%;
             }
@@ -40,15 +42,17 @@
             #recherche{
                 width: 16%;
                 margin-right: 5%;
+                top: 55px;
             }
         }
         
         #recherche{
-            position: absolute;
+            
+            position: fixed;
             right: 0px;
             
             background-color: rgb(20,20,20);
-            z-index: 1;
+            z-index: 2;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             padding-left: 10px;
@@ -63,7 +67,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="position: fixed;width:100%;top:0px;z-index:1">
         <a class="navbar-brand" href="accueil.html">Spotijam</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon" id="btnmenu"></span>
@@ -94,10 +98,9 @@
         </div>
       </nav>
 
-      <div id="recherche"></div>
-
+      <div id="recherche" style="display: none;"></div>
       <div class="container" id="container">
-          <br>
+          <br><br><br><br>
           <h3>Mes artistes favoris</h3>
         </div>
 
@@ -109,8 +112,10 @@
     
     var compteur = 0;
     function affichermenu(){
-        if(compteur % 2 != 0)
+        if(compteur % 2 != 0){
+            document.getElementById("recherche").style.display = "none";
             document.getElementById("navbarColor02").style.display = "none";
+        }
         else
         document.getElementById("navbarColor02").style.display = "block";
         compteur ++;
@@ -129,11 +134,17 @@
             
             var tableau = document.getElementById("tableau");
             var i = 0;
-            var nbcases;
+            var ecran = "' style='max-width:100%'><br>";
+            var noimage = 1;
+
             if (window.matchMedia("(min-width: 600px)").matches) {
                 nbcases = 4
             } else {
                 nbcases = 1
+            }
+            if (window.matchMedia("(min-width: 1601px)").matches) {
+                noimage = 0;
+                ecran = "' style='max-width:100%;max-height:380px;'><br>";
             }
             
             var row = tableau.insertRow(0);
@@ -148,7 +159,7 @@
                             i=0;
                         }
                         cell = row.insertCell(i);
-                        cell.innerHTML = "<a style='font-size:18px' href='#'><img src='" + item["images"][1]["url"] + "' style='max-width:100%'><br>" + item["name"] + "<br></a>";
+                        cell.innerHTML = "<a style='font-size:18px' href='artiste?id=" + item["id"] + "'><img src='" + item["images"][noimage]["url"] + ecran + item["name"] + "<br></a>";
                         i++;
                     })
                 }
@@ -176,7 +187,7 @@
             releases["artists"]["items"].forEach(item =>{
                 
                 if(item["images"][2] !== undefined){
-                    document.getElementById("recherche").innerHTML += item["name"] + "<br>";
+                    document.getElementById("recherche").innerHTML += "<a href='artiste?id=" + item["id"] + "'>" + item["name"] + "</a><br>";
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
             });
@@ -188,6 +199,9 @@
    document.getElementById("txtrecherche").addEventListener("click", function(){
             document.getElementById("recherche").style.display = "block";
         });
+   document.getElementById("tableau").addEventListener("click", function(){
+            document.getElementById("recherche").style.display = "none";
+        });     
 
         var requete;
         document.getElementById("container").addEventListener("click", function(){
