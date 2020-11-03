@@ -333,17 +333,19 @@ function ajouttrackartistes(){
                 const xhr5 = new XMLHttpRequest();
                 xhr5.withCredentials = true;
 
+                xhr5.open("GET", "https://api.spotify.com/v1/artists/"+item+"/top-tracks?market=FR");
+                xhr5.setRequestHeader("Accept", "application/json");
+                xhr5.setRequestHeader("Content-Type", "application/json");
+                xhr5.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+                xhr5.send(data);
+                
                 xhr5.addEventListener("readystatechange", function () {
                 if (this.readyState === this.DONE) {
                     console.log("pk pas ici")
                     console.log(this.responseText);
                 }
 
-                xhr5.open("GET", "https://api.spotify.com/v1/artists/"+item+"/top-tracks?market=FR");
-                xhr5.setRequestHeader("Accept", "application/json");
-                xhr5.setRequestHeader("Content-Type", "application/json");
-                xhr5.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
-                xhr5.send(data);
+                
                 });
 
 
