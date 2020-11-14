@@ -79,8 +79,11 @@
 
     xhr4.addEventListener("readystatechange", function () {
     if (this.readyState === this.DONE) {
-            //console.log(this.responseText);
-            ajouttrackartistes();
+            let playlist=JSON.parse(this.responseText);
+            idplaylist=playlist["id"];
+            console.log(idplaylist);
+
+            searchartistes();
         }
     });
 
@@ -103,25 +106,27 @@
       
         <div class="navbar-collapse collapse" id="navbarColor02" style="margin-left: 3%;">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
               <a class="nav-link" style="margin-right:20%" href="parcourir.html?categorie=nouveautes">Nouveautés</a>
             </li>
-            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
               <a class="nav-link" href="parcourir.html?categorie=ambient">Ambiance</a>
             </li>
-            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
                 <a class="nav-link" href="parcourir.html?categorie=workout">Sport</a>
             </li>
-            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
                 <a class="nav-link" href="parcourir.html?categorie=hip-hop">Rap</a>
             </li>
-            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
                 <a class="nav-link" href="parcourir.html?categorie=electro">Electro</a>
+            </li>
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
+                <a class="nav-link" href="voirplaylist.html">Playlist</a>
             </li>
           </ul>
           <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" id="txtrecherche" placeholder="Rechercher un artiste">
-            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Rechercher</button>
           </form>
         </div>
       </nav>
@@ -153,15 +158,23 @@
           </div>
           <br>
           <br>
+          <div id="listartist"></div>
+          <br>
+          <br>
           <button class="btn btn-secondary my-2 my-sm-0" style="margin-left: 45%;" name="btnaddplaylist" onclick="creerplaylist()">Créer une nouvelle playlist</button>
         </div>
 </body>
 
 <script>
 sessionStorage;
-var nomplaylist=document.getElementById("txtnomplaylist");
-var descriptionplaylist=document.getElementById("description");
-var ispublic=document.getElementById("public");
+let nomplaylist=document.getElementById("txtnomplaylist");
+let descriptionplaylist=document.getElementById("description");
+let ispublic=document.getElementById("public");
+let idplaylist;
+let idtrack;
+
+
+
 
 const data = null;
 const xhr2 = new XMLHttpRequest();
@@ -174,7 +187,7 @@ const xhr2 = new XMLHttpRequest();
                 artist["artists"]["items"].forEach(item =>{
                 
                 if(item["images"][2] !== undefined){
-                    document.getElementById("recherche").innerHTML += item["name"] + "<br>";
+                    document.getElementById("recherche").innerHTML += "<a href='artiste.html?id=" + item["id"] + "'>" + item["name"] + "</a><br>";
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
             });
@@ -221,6 +234,7 @@ function recherche(){
 
 <script>
 var lstartist= [];
+var lstnameartist=[];
 const xhr3 = new XMLHttpRequest();
       xhr3.withCredentials = true;
       xhr3.addEventListener("readystatechange", function () {
@@ -231,7 +245,7 @@ const xhr3 = new XMLHttpRequest();
                 artist["artists"]["items"].forEach(item =>{
                 //console.log( artist["artists"]["items"]);
                 if(item["images"][2] !== undefined){
-                    document.getElementById("rechercheartist").innerHTML += item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' value='+' onclick=ajoutartiste('" + item["id"] + "')>"+" "+"<input type='button' class='btn btn-danger my-2 my-sm-0' value='-' onclick=suppressionartiste('" + item["id"] + "')>  <br><br>";
+                    document.getElementById("rechercheartist").innerHTML += (item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' value='+' onclick=ajoutartiste('" + item["id"] + "','"+item["name"]+"')>"+" "+"<input type='button' class='btn btn-danger my-2 my-sm-0' value='-' onclick=suppressionartiste('" + item["id"] + "',"+item["name"]+")>  <br><br>";
                     console.log(item["name"]);
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
@@ -265,13 +279,14 @@ function rechercheartist(){
     }
 }
 
-function ajoutartiste(idartist){
+function ajoutartiste(idartist,nameartist){
     var exist=false;
     //console.log(idartist);
     if(lstartist.length==0)
     {
+        lstnameartist.push(nameartist);
         lstartist.push(idartist);
-        console.log("premier ajout");
+        //console.log("premier ajout");
             
     }
     else
@@ -281,20 +296,23 @@ function ajoutartiste(idartist){
             if(item==idartist)
             {
                 exist=true;
-                console.log("existe déjà");
+                //console.log("existe déjà");
             }
         });
         if(exist!=true)
             {
                 lstartist.push(idartist);
-                console.log("existe pas");
+                lstnameartist.push(nameartist);
+                //console.log("existe pas");
             }
     }
-
+     document.getElementById("txtrechercheartist").value="";
     lstartist.forEach(item =>{
             console.log(item);
         });
     console.log(lstartist.length);
+    rechercheartist();
+    afficherlistartists()
 }
 
 function suppressionartiste(idartist){
@@ -307,27 +325,30 @@ function suppressionartiste(idartist){
             if(item==idartist)
             {
                 exist=true;
-                console.log("existe déjà");
+                //console.log("existe déjà");
                 i=lstartist.indexOf(item);
+
             }
         });
         if(exist==true)
             {
                 lstartist.splice(i,1);
-                console.log("existe pas");
+                lstnameartist.splice(i,1);
+                //console.log("existe pas");
             }
             
     }
-
+    document.getElementById("txtrechercheartist").value="";
+    rechercheartist();
     lstartist.forEach(item =>{
             console.log(item);
         });
     console.log(lstartist.length);
 }
 
-function ajouttrackartistes(){
-    console.log("ici");
+function searchartistes(){
     lstartist.forEach(item =>{
+                console.log(idplaylist);
                 console.log(item);   
 
                 const xhr5 = new XMLHttpRequest();
@@ -338,19 +359,60 @@ function ajouttrackartistes(){
                 xhr5.setRequestHeader("Content-Type", "application/json");
                 xhr5.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
                 xhr5.send(data);
-                
+
                 xhr5.addEventListener("readystatechange", function () {
                 if (this.readyState === this.DONE) {
-                    console.log("pk pas ici")
-                    console.log(this.responseText);
-                }
+                        var track=JSON.parse(this.responseText);
+                         track["tracks"].forEach(item =>{
+                            console.log(item["id"]);
+                            idtrack=item["id"];
+                            ajouttrackartistes(idplaylist,idtrack);
 
-                
+
+
+
+                      });
+                    }
                 });
 
 
             });
 }
+
+function ajouttrackartistes(idplaylist,idtrack)
+{
+    const data = null;
+
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === this.DONE) {
+        //console.log(this.responseText);
+    }
+    });
+
+    xhr.open("POST", "https://api.spotify.com/v1/playlists/"+idplaylist+"/tracks?uris=spotify%3Atrack%3A"+idtrack);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Bearer "+sessionStorage.getItem("active_token"));
+
+    xhr.send(data);
+    
+}
+
+function afficherlistartists()
+{
+    document.getElementById("listartist").innerHTML="";
+            if(lstnameartist.length > 0)
+            {
+                lstnameartist.forEach(item =>{
+                    document.getElementById("listartist").innerHTML +="<p>"+item+"</p>";
+                });
+            }
+}
+    
+
 
 
 
