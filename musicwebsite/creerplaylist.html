@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotijam</title>
+    <script src="ressources/fonctions.js"></script>
+    <link rel="stylesheet" href="ressources/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{
+            width: 100% ;
+        }
+        td{
+            max-width: 10%;
+            text-align: center;
+        }
+        a{
+            color:white;
+            text-decoration: none;
+        }
+        a:hover{
+            color:grey;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        img:hover{
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        @media screen and (max-width: 600px){
+            #recherche{
+                width: 100%;
+                margin-right: 0%;
+            }
+        }
+
+        @media screen and (min-width: 601px){
+            #recherche{
+                width: 16%;
+                margin-right: 5%;
+            }
+        }
+        
+        #recherche{
+            position: absolute;
+            right: 0px;
+            
+            background-color: rgb(20,20,20);
+            z-index: 1;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding-left: 10px;
+            font-family: Roboto,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.5;
+            color:rgb(220,220,220);
+            padding-bottom: 5px;
+            
+        }
+    </style>
+</head>
+<script>
+    
+    function creerplaylist(){
+    var saisienom =document.getElementById("txtnomplaylist").value;
+    var saisiedescription =document.getElementById("description").value;
+    var saisieispublic =document.getElementById("public").value;
+    const data = JSON.stringify({
+    "name": saisienom,
+    "description": saisiedescription,
+    "public": saisieispublic
+    });
+
+    const xhr4 = new XMLHttpRequest();
+    xhr4.withCredentials = true;
+
+    xhr4.addEventListener("readystatechange", function () {
+    if (this.readyState === this.DONE) {
+            //console.log(this.responseText);
+            ajouttrackartistes();
+        }
+    });
+
+    xhr4.open("POST", "https://api.spotify.com/v1/users/"+sessionStorage.getItem("user_id")+"/playlists");
+    xhr4.setRequestHeader("Content-Type", "application/json");
+    xhr4.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+
+    xhr4.send(data);
+
+
+    
+}
+    </script>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="accueil.html">Spotijam</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon" id="btnmenu"></span>
+        </button>
+      
+        <div class="navbar-collapse collapse" id="navbarColor02" style="margin-left: 3%;">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+              <a class="nav-link" style="margin-right:20%" href="parcourir.html?categorie=nouveautes">Nouveautés</a>
+            </li>
+            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+              <a class="nav-link" href="parcourir.html?categorie=ambient">Ambiance</a>
+            </li>
+            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+                <a class="nav-link" href="parcourir.html?categorie=workout">Sport</a>
+            </li>
+            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+                <a class="nav-link" href="parcourir.html?categorie=hip-hop">Rap</a>
+            </li>
+            <li class="nav-item" style="margin-left: 7%; margin-right: 7%;">
+                <a class="nav-link" href="parcourir.html?categorie=electro">Electro</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" id="txtrecherche" placeholder="Rechercher un artiste">
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Rechercher</button>
+          </form>
+        </div>
+      </nav>
+
+      <div id="recherche"></div>
+
+      <div class="container" id="container">
+          <br>
+          <h3>Création d'une playlist</h3>
+          <br>
+          <input class="form-control mr-sm-2" type="text" id="txtnomplaylist" name="txtnomplaylist" placeholder="Nom playlist" value="">
+          <br>
+          <textarea class="form-control" id="description" placeholder="Description" rows="5"></textarea>
+          <br>
+          <input class="form-control mr-sm-2" type="text" id="txtrechercheartist" placeholder="Rechercher un artiste">
+          <br>
+          <div id="rechercheartist"></div>
+          <br>
+          <label class="form-check-label">Collaborative :</label>
+          <br>
+          <br>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="public" id="public" value="true">
+            <label class="form-check-label" for="public">Oui</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="public" id="public" value="false">
+            <label class="form-check-label" for="public">Non</label>
+          </div>
+          <br>
+          <br>
+          <button class="btn btn-secondary my-2 my-sm-0" style="margin-left: 45%;" name="btnaddplaylist" onclick="creerplaylist()">Créer une nouvelle playlist</button>
+        </div>
+</body>
+
+<script>
+sessionStorage;
+var nomplaylist=document.getElementById("txtnomplaylist");
+var descriptionplaylist=document.getElementById("description");
+var ispublic=document.getElementById("public");
+
+const data = null;
+const xhr2 = new XMLHttpRequest();
+      xhr2.withCredentials = true;
+      xhr2.addEventListener("readystatechange", function () {
+
+      document.getElementById("recherche").innerHTML = "";
+      if (this.readyState === this.DONE) {
+            var artist = JSON.parse(this.responseText);
+                artist["artists"]["items"].forEach(item =>{
+                
+                if(item["images"][2] !== undefined){
+                    document.getElementById("recherche").innerHTML += item["name"] + "<br>";
+                    //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
+                }
+            });
+        }
+
+   });
+
+document.getElementById("btnmenu").addEventListener("click", affichermenu);
+var compteur = 0;
+function affichermenu(){
+    if(compteur % 2 != 0)
+        document.getElementById("navbarColor02").style.display = "none";
+    else
+    document.getElementById("navbarColor02").style.display = "block";
+    compteur ++;
+}
+
+document.getElementById("txtrecherche").addEventListener("keyup", recherche);
+document.getElementById("txtrecherche").addEventListener("click", function(){
+    document.getElementById("recherche").style.display = "block";
+});
+
+        var requete;
+        document.getElementById("container").addEventListener("click", function(){
+            document.getElementById("recherche").style.display = "none";
+        });
+
+function recherche(){
+
+    if(document.getElementById("txtrecherche").value != "" && document.getElementById("txtrecherche").value.length > 2){
+        requete = "https://api.spotify.com/v1/search?query=" + document.getElementById("txtrecherche").value + "&type=artist&limit=10";
+        document.getElementById("recherche").innerHTML = "Chargement...";
+        xhr2.open("GET", requete);
+        xhr2.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+        xhr2.send(data);
+    }
+    else
+    {
+        document.getElementById("recherche").innerHTML = "";
+    }
+}
+
+</script>
+
+<script>
+var lstartist= [];
+const xhr3 = new XMLHttpRequest();
+      xhr3.withCredentials = true;
+      xhr3.addEventListener("readystatechange", function () {
+
+      document.getElementById("rechercheartist").innerHTML = "";
+      if (this.readyState === this.DONE) {
+            var artist = JSON.parse(this.responseText);
+                artist["artists"]["items"].forEach(item =>{
+                //console.log( artist["artists"]["items"]);
+                if(item["images"][2] !== undefined){
+                    document.getElementById("rechercheartist").innerHTML += item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' value='+' onclick=ajoutartiste('" + item["id"] + "')>"+" "+"<input type='button' class='btn btn-danger my-2 my-sm-0' value='-' onclick=suppressionartiste('" + item["id"] + "')>  <br><br>";
+                    console.log(item["name"]);
+                    //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
+                }
+                
+            });
+            
+        }
+   });
+
+document.getElementById("txtrechercheartist").addEventListener("keyup", rechercheartist);
+document.getElementById("txtrechercheartist").addEventListener("click", function(){
+    document.getElementById("rechercheartist").style.display = "block";
+});
+
+var requete;
+// document.getElementById("container").addEventListener("click", function(){
+//     document.getElementById("rechercheartist").style.display = "none";
+// });
+
+function rechercheartist(){
+    if(document.getElementById("txtrechercheartist").value != "" && document.getElementById("txtrechercheartist").value.length > 2){
+        requete = "https://api.spotify.com/v1/search?query=" + document.getElementById("txtrechercheartist").value + "&type=artist&limit=10";
+        document.getElementById("rechercheartist").innerHTML = "Chargement...";
+        xhr3.open("GET", requete);
+        xhr3.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+        xhr3.send(data);
+    }
+    else
+    {
+        document.getElementById("rechercheartist").innerHTML = "";
+    }
+}
+
+function ajoutartiste(idartist){
+    var exist=false;
+    //console.log(idartist);
+    if(lstartist.length==0)
+    {
+        lstartist.push(idartist);
+        console.log("premier ajout");
+            
+    }
+    else
+    {
+            lstartist.forEach(item =>{
+            //console.log(item);
+            if(item==idartist)
+            {
+                exist=true;
+                console.log("existe déjà");
+            }
+        });
+        if(exist!=true)
+            {
+                lstartist.push(idartist);
+                console.log("existe pas");
+            }
+    }
+
+    lstartist.forEach(item =>{
+            console.log(item);
+        });
+    console.log(lstartist.length);
+}
+
+function suppressionartiste(idartist){
+    var exist=false;
+    var i=0;
+    if(lstartist.length>0)
+    {
+        lstartist.forEach(item =>{
+            //console.log(item);
+            if(item==idartist)
+            {
+                exist=true;
+                console.log("existe déjà");
+                i=lstartist.indexOf(item);
+            }
+        });
+        if(exist==true)
+            {
+                lstartist.splice(i,1);
+                console.log("existe pas");
+            }
+            
+    }
+
+    lstartist.forEach(item =>{
+            console.log(item);
+        });
+    console.log(lstartist.length);
+}
+
+function ajouttrackartistes(){
+    console.log("ici");
+    lstartist.forEach(item =>{
+                console.log(item);   
+
+                const xhr5 = new XMLHttpRequest();
+                xhr5.withCredentials = true;
+
+                xhr5.open("GET", "https://api.spotify.com/v1/artists/"+item+"/top-tracks?market=FR");
+                xhr5.setRequestHeader("Accept", "application/json");
+                xhr5.setRequestHeader("Content-Type", "application/json");
+                xhr5.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+                xhr5.send(data);
+                
+                xhr5.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    console.log("pk pas ici")
+                    console.log(this.responseText);
+                }
+
+                
+                });
+
+
+            });
+}
+
+
+
+</script>
+
+</html>
