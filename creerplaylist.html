@@ -242,10 +242,13 @@ const xhr3 = new XMLHttpRequest();
       document.getElementById("rechercheartist").innerHTML = "";
       if (this.readyState === this.DONE) {
             var artist = JSON.parse(this.responseText);
+            console.log(artist);
                 artist["artists"]["items"].forEach(item =>{
                 //console.log( artist["artists"]["items"]);
                 if(item["images"][2] !== undefined){
-                    document.getElementById("rechercheartist").innerHTML += (item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' value='+' onclick=ajoutartiste('" + item["id"] + "','"+item["name"]+"')>"+" "+"<input type='button' class='btn btn-danger my-2 my-sm-0' value='-' onclick=suppressionartiste('" + item["id"] + "',"+item["name"]+")>  <br><br>";
+                    let name = "\"" + item["name"] + "\"";
+                    let id = "\"" + item["id"] + "\"";
+                    document.getElementById("rechercheartist").innerHTML += item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' value='+' onclick='ajoutartiste(" + id + ", " + name + ")'>"+" "+"<input type='button' class='btn btn-danger my-2 my-sm-0' value='-' onclick='suppressionartiste(" + id + ","+ name +")'>  <br><br>";
                     console.log(item["name"]);
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
@@ -280,6 +283,7 @@ function rechercheartist(){
 }
 
 function ajoutartiste(idartist,nameartist){
+    alert();
     var exist=false;
     //console.log(idartist);
     if(lstartist.length==0)
