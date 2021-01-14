@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotijam</title>
+    <script type="text/javascript" src="ressources/fonctions.js"></script>
+    <link rel="stylesheet" href="ressources/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{
+            width: 100% ;
+        }
+        td{
+            
+            text-align: center;
+            text-decoration: none;
+            margin:0px;
+            padding:0px;
+        }
+        a{
+            color:white;
+        }
+        a:hover{
+            color:grey;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        img:hover{
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        @media screen and (max-width: 600px){
+            #recherche{
+                position: fixed;
+                top:341px;
+                width: 100%;
+                margin-right: 0%;
+            }
+
+            #albums{
+                color: white; font-size: 38px;
+            }
+
+        }
+
+        @media screen and (min-width: 601px){
+            #recherche{
+                width: 16%;
+                margin-right: 5%;
+                top: 55px;
+            }
+
+            #albums{
+                color: white; font-size: 38px;margin-left: 75%;
+            }
+            #tableau2{
+                position:absolute; top:88%;font-size: 32px;color:white
+            }
+        }
+        
+        #recherche{
+            position: fixed;
+            right: 0px;
+            
+            background-color: rgb(20,20,20);
+            z-index: 2;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding-left: 10px;
+            font-family: Roboto,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.5;
+            color:rgb(220,220,220);
+            padding-bottom: 5px;
+            
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="position: fixed;width:100%;top:0px;z-index:1">
+        <a class="navbar-brand" href="accueil.html">Spotijam</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon" id="btnmenu"></span>
+        </button>
+      
+        <div class="navbar-collapse collapse" id="navbarColor02" style="margin-left: 3%;">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
+              <a class="nav-link" style="margin-right:20%" href="parcourir.html?categorie=nouveautes">Nouveautés</a>
+            </li>
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
+              <a class="nav-link" href="parcourir.html?categorie=ambient">Ambiance</a>
+            </li>
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
+                <a class="nav-link" href="parcourir.html?categorie=workout">Sport</a>
+            </li>
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
+                <a class="nav-link" href="parcourir.html?categorie=hip-hop">Rap</a>
+            </li>
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
+                <a class="nav-link" href="parcourir.html?categorie=electro">Electro</a>
+            </li>
+            <li class="nav-item" style="margin-left: 6%; margin-right: 6%;">
+                <a class="nav-link" href="voirplaylist.html">Playlist</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" id="txtrecherche" placeholder="Rechercher un artiste">
+          </form>
+        </div>
+      </nav>
+
+      <div id="recherche" style="display: none;"></div>
+
+
+<div style="margin-left:10%;margin-right:10%" id="container">
+<br><br><br>
+          <div id="div1" style="float:left"></div>
+          <div style="float:right;margin-top:7.5%;margin-right: 5%;"><span id="albums">Albums</span><table id="tableau"></table></div>
+          
+</div>
+
+<div id="tableau2"><br></div>
+</body>
+<script>
+    sessionStorage;
+    const data = null;
+
+    const xhr = new XMLHttpRequest();
+    const xhr3 = new XMLHttpRequest();
+    const xhr4 = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    
+
+    xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === this.DONE) {
+
+            var releases = JSON.parse(this.responseText);
+            document.getElementById("div1").innerHTML += "<span style='font-size:80px;color:white'>" + releases["name"] + "</span><br>Popularité : " + releases["popularity"] + "<br>Followers : " + releases["followers"]["total"] + "<br>" + "<br>" + "<img src='" + releases["images"][1]["url"] + "'>";
+            
+            xhr3.open("GET", "https://api.spotify.com/v1/artists/" + id + "/albums?offset=0&limit=8&include_groups=album,single,compilation,appears_on");
+            xhr3.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+
+            xhr3.send(data);
+
+            xhr4.open("GET", "https://api.spotify.com/v1/artists/" + id + "/related-artists");
+            xhr4.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+
+            xhr4.send(data);
+        }
+    });
+
+    xhr3.addEventListener("readystatechange", function () {
+        if (this.readyState === this.DONE) {
+
+            var releases = JSON.parse(this.responseText);
+            var elemAncien;
+            var tableau = document.getElementById("tableau");
+            var i = 0;
+            var nbcases;
+            if (window.matchMedia("(min-width: 600px)").matches) {
+                nbcases = 3
+            } else {
+                nbcases = 1
+            }
+
+            var row = tableau.insertRow(0);
+            var cell;
+            releases["items"].forEach(elem =>
+                {
+                    if(1==1){
+                        if(i > nbcases){
+                            row = tableau.insertRow(1);
+                            i=0;
+                        }
+                        cell = row.insertCell(i);
+                        if(elem["name"].length > 17){
+                            elem["name"] = elem["name"].substring(0,17) + "...";
+                        }
+                        
+                        cell.innerHTML = "<a style='font-size:14px' target='_blank' href='" + elem["external_urls"]["spotify"] + "'><img style='max-width:150px' src='" + elem["images"][1]["url"] + "' style=''><br>" + elem["name"] + "<br><br></a>";
+                        i++;
+                        elemAncien = elem["name"];
+                    
+                    }
+                });
+        }
+    });
+
+
+    xhr4.addEventListener("readystatechange", function () {
+        if (this.readyState === this.DONE) {
+
+            var releases = JSON.parse(this.responseText);
+
+            
+            var tableau2 = document.getElementById("tableau2");
+            
+
+            if (window.matchMedia("(min-width: 600px)").matches)
+                    {tableau2.innerHTML = "&nbsp;Artistes similaires<br>";
+                        releases["artists"].splice(releases["artists"].length-10,releases["artists"].length);
+            releases["artists"].forEach(elem =>
+                {
+                    console.log(elem);
+                    tableau2.innerHTML += "<a href='artiste.html?id=" + elem["id"] + "'><img src='" + elem["images"][1]["url"] + "' style='width:10%;height:160px'></a>";
+                });
+                    }
+            
+            
+        }
+    });
+
+    var requete;
+    var id = getParameters("id");
+
+    requete = "https://api.spotify.com/v1/artists/" + id;
+    
+    xhr.open("GET", requete);
+    xhr.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+
+    xhr.send(data);
+
+
+    document.getElementById("btnmenu").addEventListener("click", affichermenu);
+    document.getElementById("div1").addEventListener("click", function(){
+            document.getElementById("recherche").style.display = "none";
+        });
+    
+    var compteur = 0;
+    function affichermenu(){
+        if(compteur % 2 != 0)
+        {
+            document.getElementById("recherche").style.display = "none";
+            document.getElementById("navbarColor02").style.display = "none";
+        }
+        else
+        document.getElementById("navbarColor02").style.display = "block";
+        compteur ++;
+    }
+
+        const xhr2 = new XMLHttpRequest();
+    xhr2.withCredentials = true;
+
+    xhr2.addEventListener("readystatechange", function () {
+
+        document.getElementById("recherche").innerHTML = "";
+        if (this.readyState === this.DONE) {
+
+            var releases = JSON.parse(this.responseText);
+            releases["artists"]["items"].forEach(item =>{
+                
+                if(item["images"][2] !== undefined){
+                    document.getElementById("recherche").innerHTML += "<a href='artiste.html?id=" + item["id"] + "'>" + item["name"] + "</a><br>";
+                    //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
+                }
+            });
+        }
+
+   });
+
+   document.getElementById("txtrecherche").addEventListener("keyup", recherche);
+   document.getElementById("txtrecherche").addEventListener("click", function(){
+            document.getElementById("recherche").style.display = "block";
+        });
+
+        var requete;
+        document.getElementById("container").addEventListener("click", function(){
+            document.getElementById("recherche").style.display = "none";
+        });
+        
+        function recherche(){
+        if(document.getElementById("txtrecherche").value != "" && document.getElementById("txtrecherche").value.length > 2){
+            requete = "https://api.spotify.com/v1/search?query=" + document.getElementById("txtrecherche").value + "&type=artist&limit=10";
+            document.getElementById("recherche").innerHTML = "Chargement...";
+                xhr2.open("GET", requete);
+                xhr2.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
+                xhr2.send(data);
+        }
+        else
+        {
+            document.getElementById("recherche").innerHTML = "";
+        }
+    }
+    
+</script>

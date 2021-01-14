@@ -92,7 +92,9 @@
     xhr4.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
 
     xhr4.send(data);
-
+    document.getElementById("txtnomplaylist").value="";
+    document.getElementById("description").value="";
+    
 
     
 }
@@ -161,7 +163,7 @@
           <div id="listartist"></div>
           <br>
           <br>
-          <button class="btn btn-secondary my-2 my-sm-0" style="margin-left: 45%;" name="btnaddplaylist" onclick="creerplaylist()">Créer une nouvelle playlist</button>
+          <button class="btn btn-secondary my-2 my-sm-0" style="margin-left: 45%;" name="btnaddplaylist" onclick="creerplaylist()">Créer une nouvelle playlist</button> <br /><br /> <button class="btn btn-secondary my-2 my-sm-0" style="margin-left: 45%;" name="btnavoirplaylist" onclick="document.location.href='voirplaylist.html';">Voir mes playlists</button>
         </div>
 </body>
 
@@ -242,13 +244,12 @@ const xhr3 = new XMLHttpRequest();
       document.getElementById("rechercheartist").innerHTML = "";
       if (this.readyState === this.DONE) {
             var artist = JSON.parse(this.responseText);
-            console.log(artist);
                 artist["artists"]["items"].forEach(item =>{
                 //console.log( artist["artists"]["items"]);
                 if(item["images"][2] !== undefined){
                     let name = "\"" + item["name"] + "\"";
                     let id = "\"" + item["id"] + "\"";
-                    document.getElementById("rechercheartist").innerHTML += item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' value='+' onclick='ajoutartiste(" + id + ", " + name + ")'>"+" "+"<input type='button' class='btn btn-danger my-2 my-sm-0' value='-' onclick='suppressionartiste(" + id + ","+ name +")'>  <br><br>";
+                    document.getElementById("rechercheartist").innerHTML += item["name"] +" "+"<input type='button' class='btn btn-secondary my-2 my-sm-0' value='+' onclick='ajoutartiste(" + id + ", " + name + ")'>"+" "+"<input type='button' class='btn btn-danger my-2 my-sm-0' value='-' onclick='suppressionartiste(" + id + ")'>  <br><br>";
                     console.log(item["name"]);
                     //document.getElementById("recherche").innerHTML += "<img src='" + item["images"][2]["url"] + "'>" + "<br>";
                 }
@@ -283,7 +284,6 @@ function rechercheartist(){
 }
 
 function ajoutartiste(idartist,nameartist){
-    alert();
     var exist=false;
     //console.log(idartist);
     if(lstartist.length==0)
@@ -316,7 +316,7 @@ function ajoutartiste(idartist,nameartist){
         });
     console.log(lstartist.length);
     rechercheartist();
-    afficherlistartists()
+    afficherlistartists();
 }
 
 function suppressionartiste(idartist){
@@ -338,6 +338,7 @@ function suppressionartiste(idartist){
             {
                 lstartist.splice(i,1);
                 lstnameartist.splice(i,1);
+                afficherlistartists();
                 //console.log("existe pas");
             }
             
@@ -364,6 +365,7 @@ function searchartistes(){
                 xhr5.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("active_token"));
                 xhr5.send(data);
 
+
                 xhr5.addEventListener("readystatechange", function () {
                 if (this.readyState === this.DONE) {
                         var track=JSON.parse(this.responseText);
@@ -379,8 +381,8 @@ function searchartistes(){
                     }
                 });
 
-
             });
+
 }
 
 function ajouttrackartistes(idplaylist,idtrack)
@@ -403,6 +405,7 @@ function ajouttrackartistes(idplaylist,idtrack)
 
     xhr.send(data);
     
+    
 }
 
 function afficherlistartists()
@@ -413,6 +416,10 @@ function afficherlistartists()
                 lstnameartist.forEach(item =>{
                     document.getElementById("listartist").innerHTML +="<p>"+item+"</p>";
                 });
+            }
+            else
+            {
+                document.getElementById("listartist").innerHTML="";
             }
 }
     
